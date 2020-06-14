@@ -1,25 +1,27 @@
 import React from 'react';
+import {BrowserRouter as Router, Route } from "react-router-dom";
 import logo from './logo.svg';
-import './App.css';
+import "bootstrap/dist/css/bootstrap.min.css";
+//import './App.css';
+import Navbar from "./components/navbar.component";
+import UserList from "./components/user-list.component";
+import UserCreate from "./components/user-create.component";
+import DefaultPage from "./components/default-page.component";
+import DepartmentList from "./components/department-list.component";
+
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <div className="container">
+        <Navbar />
+        <br />
+        <Route path="/" exact component={DefaultPage} />
+        <Route path="/users" exact component={UserList} />
+        <Route path="/usercreate" exact component={UserCreate} />
+        <Route path="/departments" exact component={DepartmentList} />
+      </div>
+    </Router>
   );
 }
 
