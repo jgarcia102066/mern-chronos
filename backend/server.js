@@ -19,9 +19,15 @@ connection.once('open', () => {
 
 const departmentRouter = require('./routes/departments');
 const userRouter = require('./routes/users');
+const payrollPeriodRouter = require('./routes/payrollperiod');
+const timeTypeRouter = require('./routes/timetype');
+const userTimeTakenRouter = require('./routes/usertimetaken');
 
 app.use('/departments', departmentRouter);
 app.use('/users', userRouter);
+app.use('/payrollperiod', payrollPeriodRouter);
+app.use('/timetype', timeTypeRouter);
+app.use('/usertimetaken', userTimeTakenRouter);
 
 app.listen(port, () => {
     console.log(`server is running on port ${port}`);

@@ -1,8 +1,6 @@
 const router = require('express').Router();
 let Department = require('../models/department.model');
 
-let message = "";
-
 router.route('/').get((req, res) => {
     //returns only active departments
     Department.find({departmentactive: true})
