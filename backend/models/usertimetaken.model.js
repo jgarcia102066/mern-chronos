@@ -7,7 +7,7 @@ const userTimeTakenSchema = new Schema({
         ref: 'User'
     },
     timetype: {
-        type: mongoose.Schema.Types.ObjectId, 
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'TimeType'
     },
     payrollperiod: {

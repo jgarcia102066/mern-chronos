@@ -1,33 +1,35 @@
 const router = require('express').Router();
 let UserTimeTaken = require('../models/usertimetaken.model');
+const { isValidObjectId } = require('mongoose');
+
 
 router.route('/').get((req, res) => {
     //returns all time types
-    UserTimeTaken.find()
+    UserTimeTaken.find().populate('user').populate('timetype').populate('payrollperiod')
     .then(usertimetaken => res.json(usertimetaken))
     .catch(err => res.status(400).json('Error: ' + err));
+
 });
 
 router.route('/add').post((req, res) => {
-    const userid = req.body.user._id;
-    const timetypeid = req.body.timetype._id;
-    const payrollperiodid = req.body.payrollperiod._id;
+    const user = req.body.user;
+    const timetype = req.body.timetype;
+    const payrollperiod = req.body.payrollperiod;
     const hours = req.body.hours;
-
-    UserTimeTaken.find({user: userid, timetype: timetypeid, payrollperiod: payrollperiodid})
+    
+    UserTimeTaken.find({user: user, timetype: timetype, payrollperiod: payrollperiod}).populate('user','_id').populate('timetype','_id').populate('payrollperiod','_id')
     .then(usertimetaken => {
 
         if (usertimetaken.length){
             usertimetaken.hours = hours;
-
             usertimetaken.save()
             .then(() => res.json('Existing User Time Taken Updated!'))
             .catch(err => res.status(400).json('Error: ' + err));
         } else {
             const newUserTimeTaken = new UserTimeTaken({
-                userid, 
-                timetypeid,
-                payrollperiodid,
+                user,
+                timetype,
+                payrollperiod,
                 hours 
             });
         
@@ -37,6 +39,7 @@ router.route('/add').post((req, res) => {
         }
     })
     .catch(err => res.status(400).json('Error: ' + err));
+    
 });
 
 router.route('/:id').get((req, res) => {
@@ -46,7 +49,7 @@ router.route('/:id').get((req, res) => {
 });
 
 router.route('/update/:id').post((req, res) => {
-    UserTimeTaken.findById(req.params.id)
+    UserTimeTaken.findById(req.params.id).populate('user','_id').populate('timetype','_id').populate('payrollperiod','_id')
     .then(usertimetaken => 
         {
             usertimetaken.user = req.body.user;
@@ -62,7 +65,7 @@ router.route('/update/:id').post((req, res) => {
 });
 
 router.route('/delete/:id').delete((req, res) => {
-    TimeType.findByIdAndDelete(req.param.id)
+    UserTimeTaken.findByIdAndDelete(req.param.id)
     .then(() => res.json("User Time Taken Deleted!"))
     .catch(err => res.status(400).json('Error: ' + err));
 });
@@ -86,7 +89,7 @@ router.route('/initialize').post((req, res) => {
 });
 
 function addTimeType(res, timetypecode, timetypename){
-    const newTimeType = new TimeType({
+    const newTimeType = new UserTimeTaken({
         timetypecode, 
         timetypename
     });
@@ -97,7 +100,7 @@ function addTimeType(res, timetypecode, timetypename){
 }
 
 function deleteAll(res){
-    TimeType.deleteMany({})
+    UserTimeTaken.deleteMany({})
     .then()
     .catch(err => res.status(400).json('Error: ' + err));
 }
